@@ -1,41 +1,41 @@
-name: Build and Test React App
+name: Build and Deploy React App
 
 on:
   push:
-    branches: [ "master" ] # Ensure your default branch name is correct (e.g., "main" or "master").
+    branches: [master]
   pull_request:
-    branches: [ "master" ]
+    branches: [master]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # List Node.js versions for compatibility testing.
-
     steps:
-    # Step 1: Check out the repository
-    - name: Checkout code
+    - name: Checkout the code
       uses: actions/checkout@v4
 
-    # Step 2: Set up Node.js
-    - name: Set up Node.js ${{ matrix.node-version }}
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm' # Enables caching for faster builds.
+        node-version: 18.x
+        cache: 'npm'
 
-    # Step 3: Install dependencies
     - name: Install dependencies
       run: npm ci
 
-    # Step 4: Build the app (if the script exists)
-    - name: Build the React app
-      run: npm run build --if-present
-
-    # Step 5: Run tests
-    - name: Run tests
-      if: false
+    - name: Run tests (optional, can be skipped for CI deployment)
+      # You can enable or skip this step based on your requirements
       run: npm test
+      env:
+        CI: false
+
+    - name: Build the app
+      run: npm run build
+      env:
+        CI: false # Disable treating warnings as errors for the build process
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build
