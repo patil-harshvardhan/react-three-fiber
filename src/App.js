@@ -1,24 +1,42 @@
-import logo from './logo.svg';
 import './App.css';
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import { Mesh } from "three";
+
+
+function Cube() {
+  const meshRef = useRef(null);
+
+  useFrame(() => {
+    if (!meshRef.current) {
+      return;
+    } 
+
+    meshRef.current.rotation.x += 0.01;
+    meshRef.current.rotation.y += 0.01;
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <PerspectiveCamera />
+      <boxGeometry />
+      <meshStandardMaterial color="hotpink" />
+      <OrbitControls/>
+    </mesh>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Canvas>
+      <ambientLight/>
+      <pointLight position={[10, 10, 10]}/>
+      <spotLight position={[15, 15, 15]}/>
+      <directionalLight position={[0, 0, 5]}/>
+      <hemisphereLight/>
+      <Cube />
+    </Canvas>
   );
 }
 
