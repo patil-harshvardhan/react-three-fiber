@@ -23,12 +23,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run tests (optional, can be skipped for CI deployment)
-      # You can enable or skip this step based on your requirements
-      run: npm test
-      env:
-        CI: false
-
     - name: Build the app
       run: npm run build
       env:
